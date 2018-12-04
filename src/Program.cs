@@ -18,7 +18,7 @@ namespace Area51Elevator
         {
             for ( int i = 0; i < MAX_AGENTS; i++ ) {
                 Agent agent = new Agent("Agent 00" + i, GetRandomSecurityLevel(), GetRandomFloor());
-                Agents.Add(agent, new Thread(() => {
+                Thread agentThread = new Thread(() => {
                     while (true) {
                         if ( Elevator.CurrentFloor == agent.CurrentFloor ) {
                             Floor floor = GetRandomFloor();
@@ -29,11 +29,15 @@ namespace Area51Elevator
                             Console.WriteLine($"{agent.Name} has requested the elevator arrive at their current floor ( Floor {agent.CurrentFloor.Name} ).");
                         }
                     }
-                }));
+                });
+
+                agentThread.Start();
+
+                Agents.Add(agent, agentThread);
             }
 
             while (true) {
-                
+
             }
         }
 
