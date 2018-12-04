@@ -11,33 +11,23 @@ namespace Area51Elevator
 
         private static Random Random = new Random();
         private static Dictionary<Agent, Thread> Agents = new Dictionary<Agent, Thread>();
-        private static Elevator Elevator = new Elevator();
+        private static Elevator Elevator = new Elevator(Floor.G);
         private static Floor[] Floors = { Floor.G, Floor.S, Floor.T1, Floor.T2 };
 
         static void Main(string[] args)
         {
             for ( int i = 0; i < MAX_AGENTS; i++ ) {
-                Agent agent = new Agent("Agent 00" + i, GetRandomSecurityLevel(), GetRandomFloor());
-                Thread agentThread = new Thread(() => {
-                    while (true) {
-                        if ( Elevator.CurrentFloor == agent.CurrentFloor ) {
-                            Floor floor = GetRandomFloor();
-                            Elevator.EnqueueFloor(floor);
-                            Console.WriteLine($"{agent.Name} has entered the elevator and has requested it goes to Floor {floor.Name}.");
-                        } else {
-                            Elevator.EnqueueFloor(agent.CurrentFloor);
-                            Console.WriteLine($"{agent.Name} has requested the elevator arrive at their current floor ( Floor {agent.CurrentFloor.Name} ).");
-                        }
-                    }
-                });
+                Agent a = new Agent("Agent 00" + i, GetRandomSecurityLevel(), GetRandomFloor());
 
-                agentThread.Start();
+                Thread agentThread = new Thread(new ParameterizedThreadStart(obj => AgentLogic((Agent) obj)));
+                agentThread.Start(a);
 
-                Agents.Add(agent, agentThread);
+                Agents.Add(a, agentThread);
             }
 
             while (true) {
-
+                Elevator.MoveToNextFloor();
+                Thread.Sleep(1000);
             }
         }
 
@@ -48,6 +38,20 @@ namespace Area51Elevator
 
         static Floor GetRandomFloor() {
             return Floors[Random.Next(Floors.Length - 1)];
+        }
+
+        static void AgentLogic(Agent agent) {
+            while (true) {
+                if ( Elevator.CurrentFloor == agent.CurrentFloor ) {
+                    Floor floor = GetRandomFloor();
+                    Elevator.EnqueueFloor(floor);
+                    Console.WriteLine($"{agent.Name} has entered the elevator and has requested it go to Floor {floor.Name}.");
+                } else {
+                    Elevator.EnqueueFloor(agent.CurrentFloor);
+                    Console.WriteLine($"{agent.Name} has requested the elevator go to their current floor ( Floor {agent.CurrentFloor.Name} ).");
+                }
+                Thread.Sleep(Random.Next(1000));
+            }
         }
     }
 }
