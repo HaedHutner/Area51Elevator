@@ -31,6 +31,7 @@ namespace Area51Elevator {
             while (true) {
                 Thread.Sleep (Area51.Random.Next (MAX_AGENT_PERIOD));
 
+                if ( agent.InElevator ) continue;
                 agent.RequestFloor(Elevator);
             }
         }

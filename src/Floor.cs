@@ -14,5 +14,9 @@ namespace Area51Elevator {
             this.Name = name;
             this.MinimumSecurityClearance = requiredSecurityClearance;
         }
+
+        public override string ToString() {
+            return $"Floor {Name} ({MinimumSecurityClearance})";
+        }
     }
 }

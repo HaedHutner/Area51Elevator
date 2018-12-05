@@ -27,9 +27,15 @@ namespace Area51Elevator {
         public void Enter(Agent agent, Floor floor) {
             lock ( Agents ) { 
                 if ( Agents.ContainsKey(agent) ) return;
+
+                if ( floor.MinimumSecurityClearance > agent.SecurityClearance) {
+                    Console.WriteLine ($"{agent} does not have permission to go to {floor}");
+                    return;
+                }
+                
                 Agents.Add(agent, floor);
                 EnqueueFloor(floor);
-                Console.WriteLine($"{agent.Name} has gotten on the elevator at Floor {CurrentFloor.Name}, heading for Floor {floor.Name}");
+                Console.WriteLine($"{agent} has gotten on the elevator at {CurrentFloor}, heading for {floor}");
             }
         }
 
@@ -38,14 +44,15 @@ namespace Area51Elevator {
             {
                 if ( QueuedFloors.Count == 0 ) return;
                 CurrentFloor = QueuedFloors.Dequeue();
-                Console.WriteLine("Elevator moved to Floor " + CurrentFloor.Name);
+                Console.WriteLine($"Elevator moved to {CurrentFloor}");
 
                 var AgentKeys = new List<Agent>(Agents.Keys);
                 foreach ( Agent key in AgentKeys ) {
                     if ( Agents.ContainsKey(key) && Agents[key] == CurrentFloor ) {
                         Agents.Remove(key);
+                        key.InElevator = false;
                         key.CurrentFloor = CurrentFloor;
-                        // Console.WriteLine($"{key.Name} has gotten off the elevator at Floor {Agents[key].Name}.");
+                        Console.WriteLine($"{key} has gotten off the elevator at {CurrentFloor}.");
                     }
                 }
             }

@@ -8,6 +8,8 @@ namespace Area51Elevator {
         public SecurityLevel SecurityClearance { get; private set; }
         public Floor CurrentFloor { get; set; }
 
+        public bool InElevator { get; set; }
+
         public Agent (string name, SecurityLevel level, Floor beginningFloor) {
             this.Name = name;
             this.SecurityClearance = level;
@@ -17,15 +19,16 @@ namespace Area51Elevator {
         public void RequestFloor(Elevator elevator) {
             if (elevator.CurrentFloor == CurrentFloor) {
                 Floor requestedFloor = Area51.GetRandomFloor();
-                if ( requestedFloor.MinimumSecurityClearance > this.SecurityClearance) {
-                    Console.WriteLine ($"{Name} ( {SecurityClearance} ) does not have permission to go to Floor {requestedFloor.Name} ( {requestedFloor.MinimumSecurityClearance} )");
-                } else {
-                    elevator.Enter(this, Area51.GetRandomFloor());
-                }
+                elevator.Enter(this, Area51.GetRandomFloor());
+                InElevator = true;
             } else {
                 elevator.EnqueueFloor (CurrentFloor);
-                Console.WriteLine ($"{Name} has requested the elevator go to their current floor ( Floor {CurrentFloor.Name} ).");
+                Console.WriteLine ($"{this} has requested the elevator go to their current floor ( {CurrentFloor} ).");
             }
+        }
+
+        public override string ToString() {
+            return $"{Name} ({SecurityClearance})";
         }
     }
 }
