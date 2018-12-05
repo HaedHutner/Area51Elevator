@@ -6,15 +6,15 @@ namespace Area51Elevator {
     class Program {
 
         const int MAX_AGENTS = 10;
+        const int ELEVATOR_PERIOD = 1000;
+        const int MAX_AGENT_PERIOD = 1000;
 
-        private static Random Random = new Random ();
         private static Dictionary<Agent, Thread> Agents = new Dictionary<Agent, Thread> ();
         private static Elevator Elevator = new Elevator (Floor.G);
-        private static Floor[] Floors = { Floor.G, Floor.S, Floor.T1, Floor.T2 };
 
         static void Main (string[] args) {
             for (int i = 0; i < MAX_AGENTS; i++) {
-                Agent a = new Agent ("Agent 00" + i, GetRandomSecurityLevel (), GetRandomFloor ());
+                Agent a = new Agent ("Agent 00" + i, Area51.GetRandomSecurityLevel (), Area51.GetRandomFloor ());
 
                 Thread agentThread = new Thread (new ParameterizedThreadStart (obj => AgentLogic ((Agent) obj)));
                 agentThread.Start (a);
@@ -24,30 +24,14 @@ namespace Area51Elevator {
 
             while (true) {
                 Elevator.MoveToNextFloor ();
-                Thread.Sleep (1000);
+                Thread.Sleep (ELEVATOR_PERIOD);
             }
         }
-
-        static Agent.SecurityLevel GetRandomSecurityLevel () {
-            Array values = Enum.GetValues (typeof (Agent.SecurityLevel));
-            return (Agent.SecurityLevel) values.GetValue (Random.Next (values.Length));
-        }
-
-        static Floor GetRandomFloor () {
-            return Floors[Random.Next (Floors.Length - 1)];
-        }
-
         static void AgentLogic (Agent agent) {
             while (true) {
-                if (Elevator.CurrentFloor == agent.CurrentFloor) {
-                    Floor floor = GetRandomFloor ();
-                    Elevator.EnqueueFloor (floor);
-                    Console.WriteLine ($"{agent.Name} has entered the elevator and has requested it go to Floor {floor.Name}.");
-                } else {
-                    Elevator.EnqueueFloor (agent.CurrentFloor);
-                    Console.WriteLine ($"{agent.Name} has requested the elevator go to their current floor ( Floor {agent.CurrentFloor.Name} ).");
-                }
-                Thread.Sleep (Random.Next (1000));
+                Thread.Sleep (Area51.Random.Next (MAX_AGENT_PERIOD));
+
+                agent.RequestFloor(Elevator);
             }
         }
     }
