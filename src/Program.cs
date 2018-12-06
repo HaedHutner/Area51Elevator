@@ -7,7 +7,7 @@ namespace Area51Elevator {
 
         const int MAX_AGENTS = 10;
         const int ELEVATOR_PERIOD = 1000;
-        const int MAX_AGENT_PERIOD = 1000;
+        const int MAX_AGENT_PERIOD = 5000;
 
         private static Dictionary<Agent, Thread> Agents = new Dictionary<Agent, Thread> ();
         private static Elevator Elevator = new Elevator (Floor.G);

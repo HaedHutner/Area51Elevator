@@ -8,6 +8,7 @@ namespace Area51Elevator {
         public static Floor T2 = new Floor ("T2", SecurityLevel.TopSecret);
 
         public string Name { get; private set; }
+        
         public SecurityLevel MinimumSecurityClearance { get; private set; }
 
         public Floor (string name, SecurityLevel requiredSecurityClearance) {

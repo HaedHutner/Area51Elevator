@@ -5,7 +5,9 @@ namespace Area51Elevator {
         public enum SecurityLevel { Confidential = 0, Secret = 1, TopSecret = 2 }
 
         public string Name { get; private set; }
+
         public SecurityLevel SecurityClearance { get; private set; }
+
         public Floor CurrentFloor { get; set; }
 
         public bool InElevator { get; set; }
@@ -23,7 +25,7 @@ namespace Area51Elevator {
                 InElevator = true;
             } else {
                 elevator.EnqueueFloor (CurrentFloor);
-                Console.WriteLine ($"{this} has requested the elevator go to their current floor ( {CurrentFloor} ).");
+                Log.Info ($"{this} has requested the elevator go to their current floor ( {CurrentFloor} ).");
             }
         }
 

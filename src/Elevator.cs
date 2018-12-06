@@ -3,9 +3,13 @@ using System.Collections.Generic;
 
 namespace Area51Elevator {
     public class Elevator {
+        
         public Floor CurrentFloor { get; private set; }
+
         private Queue<Floor> QueuedFloors = new Queue<Floor> ();
+
         private Dictionary<Agent, Floor> Agents = new Dictionary<Agent, Floor>();
+
         public Elevator (Floor startingFloor) {
             this.CurrentFloor = startingFloor;
         }
@@ -29,13 +33,13 @@ namespace Area51Elevator {
                 if ( Agents.ContainsKey(agent) ) return;
 
                 if ( floor.MinimumSecurityClearance > agent.SecurityClearance) {
-                    Console.WriteLine ($"{agent} does not have permission to go to {floor}");
+                    Log.Info ($"{agent} does not have permission to go to {floor}");
                     return;
                 }
                 
                 Agents.Add(agent, floor);
                 EnqueueFloor(floor);
-                Console.WriteLine($"{agent} has gotten on the elevator at {CurrentFloor}, heading for {floor}");
+                Log.Info ($"{agent} has gotten on the elevator at {CurrentFloor}, heading for {floor}");
             }
         }
 
@@ -44,7 +48,7 @@ namespace Area51Elevator {
             {
                 if ( QueuedFloors.Count == 0 ) return;
                 CurrentFloor = QueuedFloors.Dequeue();
-                Console.WriteLine($"Elevator moved to {CurrentFloor}");
+               Log.Info ($"Elevator moved to {CurrentFloor}");
 
                 var AgentKeys = new List<Agent>(Agents.Keys);
                 foreach ( Agent key in AgentKeys ) {
@@ -52,7 +56,7 @@ namespace Area51Elevator {
                         Agents.Remove(key);
                         key.InElevator = false;
                         key.CurrentFloor = CurrentFloor;
-                        Console.WriteLine($"{key} has gotten off the elevator at {CurrentFloor}.");
+                        Log.Info ($"{key} has gotten off the elevator at {CurrentFloor}.");
                     }
                 }
             }

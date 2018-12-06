@@ -6,6 +6,7 @@ namespace Area51Elevator
     public static class Area51
     {
         public static Random Random = new Random();
+        
         public static Floor[] Floors = {Floor.G, Floor.S, Floor.T1, Floor.T2};
 
         public static Queue<Floor> GetFloorsInbetween(Floor floorA, Floor floorB) {
