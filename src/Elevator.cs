@@ -15,7 +15,7 @@ namespace Area51Elevator {
         }
 
         public void EnqueueFloor (Floor floor) {
-            lock ( this ) {
+            lock (QueuedFloors) {
                 // if the floor is already queued, return
                 if ( QueuedFloors.Contains(floor) ) return;
 
@@ -29,7 +29,7 @@ namespace Area51Elevator {
         }
 
         public void Enter(Agent agent, Floor floor) {
-            lock ( Agents ) { 
+            lock (Agents) { 
                 if ( Agents.ContainsKey(agent) ) return;
 
                 if ( floor.MinimumSecurityClearance > agent.SecurityClearance) {
